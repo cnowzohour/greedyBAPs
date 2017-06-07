@@ -1,0 +1,19 @@
+Package: greedyBAPs
+Type: Package
+Title: Greedy BAP Learning Using Penalised Maximum Likelihood Score
+Version: 0.0.0.9000
+Authors@R:
+    person("Christopher", "Nowzohour", email = "hadley@rstudio.com", role = c("aut", "cre"))
+Description: Structure learning of bow-free acyclic path diagrams (BAPs) using greedy search to maximise
+    a penalised Gaussian likelihood.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggm (>= 2.3),
+    mvtnorm (>= 1.0-6),
+    caTools (>= 1.17.1),
+    sfsmisc (>= 1.1-0)
+Suggests:
+    doParallel (>= 1.0.10)
+RoxygenNote: 6.0.1
