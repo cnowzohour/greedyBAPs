@@ -12,7 +12,12 @@
 #' @param dags.only Consider DAGs only?
 #' @param direction Can be "forward" (only adding or changing edges), "backward" (only removing or changing edges), or "both" (adding, removing, and changing edges)
 #' @param verbose Print extra log output?
-#' @return List of n.restarts+1 greedy results, where each greedy result is a list containing:
+#' @return List containing:
+#'   final.bap - Adjacency matrix of "winning" BAP
+#'   final.score - Score of "winning" BAP
+#'   all.baps - List of lists (one per greedy search run) of adjacency matrices of all visited BAPs
+#'   scores - List of vector (one per greedy search run) of scores of all visited BAPs
+#'   times - List of vectors (one per greedy search run) of cumulative running time for every step
 #'
 #' @importFrom foreach %dopar%
 #' @export
@@ -66,10 +71,19 @@ greedySearch <- function(
     eps.conv = eps.conv
   )
 
-  if (mc.cores > 1) {
+  res <- if (mc.cores > 1) {
     doParallel::registerDoParallel(cores = mc.cores)
     foreach::foreach(i = 1:(n.restarts + 1)) %dopar% { oneRep(i) }
   } else lapply(1:(n.restarts + 1), oneRep)
+
+  i.best <- which.max(sapply(res, function(obj) obj$score))
+  list(
+    final.bap = res[[i.best]]$mg,
+    final.score = res[[i.best]]$score,
+    all.baps = lapply(res, function(obj) lapply(obj$states, function(state) state$mg)),
+    all.scores = lapply(res, function(obj) sapply(obj$states, function(state) state$score)),
+    times = lapply(res, function(obj) sapply(obj$states, function(state) state$ct))
+  )
 }
 
 

@@ -35,7 +35,12 @@ greedySearch(data, mg.start = NULL, n.restarts = 0, mc.cores = 1,
 \item{verbose}{Print extra log output?}
 }
 \value{
-List of n.restarts+1 greedy results, where each greedy result is a list containing:
+List containing:
+  final.bap - Adjacency matrix of "winning" BAP
+  final.score - Score of "winning" BAP
+  all.baps - List of lists (one per greedy search run) of adjacency matrices of all visited BAPs
+  scores - List of vector (one per greedy search run) of scores of all visited BAPs
+  times - List of vectors (one per greedy search run) of cumulative running time for every step
 }
 \description{
 Greedy BAP search
