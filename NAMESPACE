@@ -2,6 +2,9 @@
 
 export(causalEffects)
 export(fitAncestralGraphCustom)
+export(generateBAPPArameters)
+export(generateData)
+export(generateUniformBAP)
 export(greedySearch)
 export(greedySearchRestart)
 export(n.edges)

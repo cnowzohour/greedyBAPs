@@ -34,6 +34,9 @@ greedySearch(data, mg.start = NULL, n.restarts = 0, mc.cores = 1,
 
 \item{verbose}{Print extra log output?}
 }
+\value{
+List of n.restarts+1 greedy results, where each greedy result is a list containing:
+}
 \description{
 Greedy BAP search
 }

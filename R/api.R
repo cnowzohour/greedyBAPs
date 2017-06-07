@@ -12,6 +12,7 @@
 #' @param dags.only Consider DAGs only?
 #' @param direction Can be "forward" (only adding or changing edges), "backward" (only removing or changing edges), or "both" (adding, removing, and changing edges)
 #' @param verbose Print extra log output?
+#' @return List of n.restarts+1 greedy results, where each greedy result is a list containing:
 #'
 #' @importFrom foreach %dopar%
 #' @export
@@ -69,4 +70,76 @@ greedySearch <- function(
     doParallel::registerDoParallel(cores = mc.cores)
     foreach::foreach(i = 1:(n.restarts + 1)) %dopar% { oneRep(i) }
   } else lapply(1:(n.restarts + 1), oneRep)
+}
+
+
+#' Uniform BAP generation using MCMC
+#'
+#' @param p Number of vertices
+#' @param N Number of graphs to generate
+#' @param dag Whether to generate DAGs or more general BAPs
+#' @param max.in.degree Maximal allowed in-degree
+#' @param names Names to give to the rows / columns of the adjacency matrix
+#' @param iter Number if MCMC iterations between samples
+#' @return List of N p-by-p adjacency matrices
+#'
+#' @export
+generateUniformBAP <- function(
+  p,
+  N = 1,
+  dag = FALSE,
+  max.in.degree=Inf,
+  names=paste0("V", 1:p),
+  iter=6*p^2
+) {
+  GenerateMG4(
+    p,
+    N = N,
+    iter = iter,
+    p1 = ifelse(dag, 1, 0.5),
+    max.in.degree = max.in.degree,
+    names = names
+  )
+}
+
+
+#' Randomly generate parameters (edge weights) for a given BAP
+#'
+#' We consider the following linear recursive model:
+#'   X = B^t X + eps,
+#' where (B)_{i,j} is the edge weight of edge i->j and corresponds to the (i,j)-entry
+#' in the adjacency matrix of the graph, and eps has a N(0, Omega) distribution.
+#'
+#' @param bap p-by-p adjacency matrix
+#' @return List containing:
+#'   B - p-by-p matrix of directed edge weights
+#'   Omega - p-by-p matrix of bidirected edge weights
+#'
+#' @export
+generateBAPPArameters <- function(
+  bap
+) {
+  GenerateParams(
+    mg = bap
+  )
+}
+
+
+#' Randomly generate data for a given BAP parametrisation
+#'
+#' @param n Number of samples to generate
+#' @param params Named list containing:
+#'   B - p-by-p matrix of directed edge weights
+#'   Omega - p-by-p matrix of bidirected edge weights
+#' @return n-by-p matrix
+#'
+#' @export
+generateData <- function(
+  n,
+  params
+) {
+  GenerateData(
+    n,
+    params
+  )
 }
