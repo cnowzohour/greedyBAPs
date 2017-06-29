@@ -210,7 +210,6 @@ getVStructures <- function(mg) {
 }
 
 
-#' @export
 n.edges <- function(mg) length(which(mg==1)) + length(which(mg==100)) / 2
 
 
@@ -821,101 +820,6 @@ fastGreedySearch <- function(mg.start, data=NULL, n=NULL, maxSteps=Inf, directio
 
   return(list(mg=state$mg, score=state$score, it=i, states=states, cand.add=cand.add,
               cand.del=cand.del, cand.cha=cand.cha, scores=scores))
-}
-
-
-#' @export
-#' @importFrom foreach %dopar%
-greedySearchRestart <- function(data=NULL, n=NULL, nRestarts=10, maxSteps=Inf,
-                                direction=3, maxIter=10, edge.penalty=1, covMat=NULL,
-                                faithful.eps=0, max.in.degree=Inf, verbose=TRUE,
-                                mc.cores=1, max.pos=Inf, forward=TRUE, dags.only=FALSE,
-                                eps.conv=1e-12, file.progress="progress.txt",
-                                graph.sampling="uniform", graph.iter=NULL)
-{
-
-  if (mc.cores > 1) {
-    doParallel::registerDoParallel(cores=mc.cores)
-  }
-
-  if (is.null(data)) {
-    p <- ncol(covMat)
-  } else {
-    p <- ncol(data)
-  }
-
-  if (is.null(covMat)) covMat <- cov(data)
-
-  # Generate random starting models
-  if (graph.sampling == "uniform") {
-    p1 <- 0.5
-    if (dags.only) p1 <- 1
-    if (is.null(graph.iter)) {
-      bap.stash <- GenerateMG4(p=p, N=nRestarts, max.in.degree=max.in.degree, names=rownames(covMat), p1=p1)
-    } else {
-      bap.stash <- GenerateMG4(p=p, N=nRestarts, max.in.degree=max.in.degree, names=rownames(covMat), p1=p1, iter=graph.iter)
-    }
-  } else {
-    # bap.stash <- lapply(1:nRestarts, function(i) GenerateMG(p, max.in.degree=max.in.degree))
-  }
-  mg.empty <- matrix(0, p, p)
-  rownames(mg.empty) <- rownames(bap.stash[[1]])
-  colnames(mg.empty) <- colnames(bap.stash[[1]])
-
-  oneRep <- function(i) {
-
-    mg.start <- bap.stash[[i]]
-
-    if (faithful.eps > 0) {
-
-      # Check whether fitted distribution would be faithful to starting BAP - if not, change it
-      index <- 0
-      while (TRUE) {
-        tmp <- fitAncestralGraphCustom(mg.start, covMat, Inf, maxIter=maxIter)
-        res.faithful <- isFaithful(mg.start, tmp$Bhat, tmp$Ohat, tmp$Shat, faithful.eps)
-        if (! res.faithful$flag) {
-          index <- index + 1
-          print(paste("Making starting model faithful...", index))
-          mg.start[res.faithful$B.ind] <- 0
-          mg.start[res.faithful$O.ind] <- 0
-          mg.start[res.faithful$S.ind] <- 0
-        } else {
-          break
-        }
-        if (all(mg.start == 0)) {
-          print("Reached empty model - re-generating starting model")
-          mg.start <- GenerateMG4(p, 1)[[1]]
-        }
-      }
-    }
-
-    # Run greedy search
-    res.i <- fastGreedySearch(mg.start, data=data, n=n, maxSteps=maxSteps, direction=direction,
-                              maxIter=maxIter, edge.penalty=edge.penalty, covMat=covMat,
-                              faithful.eps=faithful.eps, verbose=verbose, max.pos=max.pos,
-                              dags.only=dags.only, eps.conv=eps.conv)
-
-    if (! is.null(file.progress)) {
-      f <- file(file.progress, open="a")
-      writeLines(as.character(i), f)
-      close(f)
-    }
-
-    res.i
-  }
-
-  res <- if (mc.cores > 1) foreach::foreach(i=1:nRestarts) %dopar% { oneRep(i) } else lapply(1:nRestarts, oneRep)
-
-  if (forward) {
-    res.forward <- fastGreedySearch(mg.empty, data=data, n=n, maxSteps=maxSteps,
-                                    direction=1, maxIter=maxIter, edge.penalty=edge.penalty,
-                                    covMat=covMat, faithful.eps=faithful.eps, verbose=verbose,
-                                    dags.only=dags.only, eps.conv=eps.conv)
-
-    return(c(res, list(res.forward)))
-  }
-
-  return(res)
 }
 
 
