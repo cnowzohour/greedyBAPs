@@ -1391,19 +1391,28 @@ causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
                                     covMat=covMat, max.in.degree=max.in.degree,
                                     faithful.eps=faithful.eps, verbose=verbose,
                                     max.pos=max.pos, mc.cores=mc.cores, forward=forward)
+  res.greedy <- greedySearch(
+    data,
+    n.restarts = R,
+    max.iter.ricf = maxIter,
+    max.steps = maxSteps,
+    max.in.degree = max.in.degree,
+    verbose = verbose,
+    mc.cores = mc.cores
+  )
 
   # Find highest-scoring model
-  i <- which.max(sapply(res.greedy, function(obj) obj$score))
+  i <- which.max(sapply(res.greedy$scores, function(scores) scores[length(scores)]))
 
   # Find equivalent models of greedy result
   if (fast){
-    tmp <- fastFindEquivalentModels(list(mg=res.greedy[[i]]$mg), c(), res.greedy[[i]]$scores,
-                                    res.greedy[[i]]$score, equivalent.eps, depth.max=depth.max,
+    tmp <- fastFindEquivalentModels(list(mg=res.greedy$final.bap), c(), list(),
+                                    res.greedy$final.score, equivalent.eps, depth.max=depth.max,
                                     data=data, n=n, maxIter=maxIter, covMat=covMat,
                                     faithful.eps=faithful.eps)
   } else {
-    tmp <- findEquivalentModels(list(mg=res.greedy[[i]]$mg), c(), res.greedy[[i]]$scores,
-                                res.greedy[[i]]$score, equivalent.eps, depth.max=depth.max,
+    tmp <- findEquivalentModels(list(mg=res.greedy$final.bap), c(), list(),
+                                res.greedy$final.score, equivalent.eps, depth.max=depth.max,
                                 time.max=time.max, data=data, n=n, maxIter=maxIter,
                                 covMat=covMat, faithful.eps=faithful.eps)
   }
