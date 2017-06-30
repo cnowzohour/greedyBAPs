@@ -301,8 +301,7 @@ getColliderInvariantModels <- function(mg) {
 
 
 getCausalEffects <- function(B) {
-  # Returns causal effect matrix E, where (E)_i,j is the causal effect of
-  # j on i
+  # Returns causal effect matrix E, where (E)_i,j is the causal effect on j on i
   diag(B) <- 0
   return(t(solve(diag(ncol(B))-t(B))))
 }
@@ -1386,11 +1385,7 @@ causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
     covMat <- cov(data)
   }
 
-  # Run R greedy searches with random starts and 1 forward search
-  res.greedy <- greedySearchRestart(data=data, n=n, R, maxIter=maxIter, maxSteps=maxSteps,
-                                    covMat=covMat, max.in.degree=max.in.degree,
-                                    faithful.eps=faithful.eps, verbose=verbose,
-                                    max.pos=max.pos, mc.cores=mc.cores, forward=forward)
+  # Run R greedy searches
   res.greedy <- greedySearch(
     data,
     n.restarts = R,
