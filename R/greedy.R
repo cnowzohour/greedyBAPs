@@ -1366,7 +1366,6 @@ fastFindEquivalentModels <- function(state, mgs.seen, scores, score, epsilon, de
 }
 
 
-#' @export
 causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
                           equivalent.eps, maxIter, maxSteps, depth.max=p*(p-1)/2,
                           time.max=Inf, faithful.eps=0, verbose=TRUE, max.pos=Inf,

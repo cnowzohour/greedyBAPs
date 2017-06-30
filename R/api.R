@@ -172,9 +172,9 @@ generateData <- function(
 #' @param equivalent.eps Maximal allowed score difference for two graphs to be considered equivalent
 #' @param verbose Print extra log output?
 #' @return List containing:
-#'   CE.minabs.gt - List of minimal absolute causal effect matrices E (one per simulation run)
+#'   CE.gt - List of minimal absolute causal effect matrices E (one per simulation run)
 #'     for the ground truths, where (E)_i,j is the causal effect on j on i
-#'   CE.minabs.greedy - same for the greedy search results
+#'   CE.greedy - same for the greedy search results
 #'
 #' @importFrom foreach %dopar%
 #' @export
@@ -203,7 +203,7 @@ causalEffectsSimulation <- function(
       1,
       n,
       FALSE,
-      R,
+      n.restarts,
       equivalent.eps,
       max.iter.ricf,
       max.steps,
@@ -220,5 +220,5 @@ causalEffectsSimulation <- function(
   CE.minabs.gt <- lapply(res, function(obj) obj$CE.minabs.gt)
   CE.minabs.greedy <- lapply(res, function(obj) obj$CE.minabs.greedy)
 
-  list(CE.minabs.gt = CE.minabs.gt, CE.minabs.greedy = CE.minabs.greedy)
+  list(CE.gt = CE.minabs.gt, CE.greedy = CE.minabs.greedy)
 }

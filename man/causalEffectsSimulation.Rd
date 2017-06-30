@@ -31,9 +31,9 @@ causalEffectsSimulation(N, p, n, mc.cores = 1, max.in.degree = Inf,
 }
 \value{
 List containing:
-  CE.minabs.gt - List of minimal absolute causal effect matrices E (one per simulation run)
+  CE.gt - List of minimal absolute causal effect matrices E (one per simulation run)
     for the ground truths, where (E)_i,j is the causal effect on j on i
-  CE.minabs.greedy - same for the greedy search results
+  CE.greedy - same for the greedy search results
 }
 \description{
 Simulate BAPs and compute causal effects of greedy search results and ground truth
