@@ -39,7 +39,7 @@ List containing:
   final.bap - Adjacency matrix of "winning" BAP
   final.score - Score of "winning" BAP
   all.baps - List of lists (one per greedy search run) of adjacency matrices of all visited BAPs
-  scores - List of vector (one per greedy search run) of scores of all visited BAPs
+  all.scores - List of vector (one per greedy search run) of scores of all visited BAPs
   times - List of vectors (one per greedy search run) of cumulative running time for every step
 }
 \description{

@@ -15,5 +15,8 @@ Imports:
     caTools (>= 1.17.1),
     sfsmisc (>= 1.1-0)
 Suggests:
-    doParallel (>= 1.0.10)
+    doParallel (>= 1.0.10),
+    knitr,
+    rmarkdown
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr
