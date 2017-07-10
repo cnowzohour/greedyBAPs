@@ -1324,7 +1324,7 @@ fastFindEquivalentModels <- function(state, mgs.seen, scores, score, epsilon, de
   # Put them into mgs.seen
   ec <- list()
   for (mg in models) {
-    hash <- componentHash(list(cnodes=1:p), mg)
+    hash <- componentHash(list(cnodes=1:nrow(mg)), mg)
     if (! (hash %in% mgs.seen)) mgs.seen[length(mgs.seen)+1] <- hash
 
     # Create state
