@@ -14,7 +14,7 @@ equivalent.eps <- 1e-10
 maxIter <- 10
 maxSteps <- 100
 
-res <- causalEffectsSimulation(
+print(system.time(res <- causalEffectsSimulation(
   N,
   p,
   n,
@@ -24,6 +24,6 @@ res <- causalEffectsSimulation(
   maxSteps,
   maxIter,
   equivalent.eps
-)
+)))
 
 roc <- plotROCCurve(res$CE.gt, res$CE.greedy, 1e-8, avg.auc = TRUE)
