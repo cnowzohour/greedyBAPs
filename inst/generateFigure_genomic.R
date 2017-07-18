@@ -4,13 +4,15 @@ library(greedyBAPs)
 postscript("genomic.eps", horizontal = FALSE, onefile = FALSE, paper = "special", width = 10, height = 10)
 par(mfrow=c(4,4))
 
-for (i in 1:8) {
+# for (i in 1:8) {
+for (i in 1:2) {
   data <- as.matrix(flowCytometry[flowCytometry$source == unique(flowCytometry$source)[i], 1:11])
 
   res.bap <- greedySearch(
     data,
     n.restarts = 10,
     max.iter.ricf = 10,
+    max.steps = 10,  ## remove this!
     max.in.degree = Inf,
     mc.cores = 20,
     dags.only = FALSE
