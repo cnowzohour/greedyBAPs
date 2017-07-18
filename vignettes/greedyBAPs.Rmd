@@ -33,10 +33,9 @@ plotScoreCurves(res$all.scores, res$times)
 
 ## Causal Effects Simulation
 We can run the causal effects simulation and plot ROC curves as follows:
-__for some reason this fails - fix later__
 ```{r}
-# res <- causalEffectsSimulation(N = 10, p = 5, n = 1000, mc.cores = 4, n.restarts = 10, max.in.degree = 2, max.steps = 100, max.iter.ricf = 10, equivalent.eps = 1e-10)
-# plotROCCurve(res$CE.gt, res$CE.greedy)
+res <- causalEffectsSimulation(N = 10, p = 5, n = 1000, mc.cores = 4, n.restarts = 10, max.in.degree = 2, max.steps = 100, max.iter.ricf = 10, equivalent.eps = 1e-10)
+plotROCCurve(res$CE.gt, res$CE.greedy)
 ```
 
 ## Sachs data
