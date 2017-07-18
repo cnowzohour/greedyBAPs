@@ -1,29 +1,18 @@
 library(greedyBAPs)
 
 
-mc.cores <- 20
-
-# p <- 10
-p <- 5
-max.in.degree <- 2
-n <- 1000
-N <- 100
-# R <- 100
-R <- 10
-equivalent.eps <- 1e-10
-maxIter <- 10
-maxSteps <- 100
-
 print(system.time(res <- causalEffectsSimulation(
-  N,
-  p,
-  n,
-  mc.cores,
-  max.in.degree,
-  R,
-  maxSteps,
-  maxIter,
-  equivalent.eps
+  N = 100,
+  p = 10,
+  n = 1000,
+  mc.cores = 20,
+  max.in.degree = 2,
+  n.restarts = 100,
+  max.steps = 100,
+  max.iter.ricf = 10,
+  equivalent.eps = 1e-10
 )))
 
+postscript("simulation.eps", horizontal = FALSE, onefile = FALSE, paper = "special", height = 5, width = 5)
 roc <- plotROCCurve(res$CE.gt, res$CE.greedy, 1e-8, avg.auc = TRUE)
+dev.off()
