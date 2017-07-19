@@ -1,6 +1,8 @@
 library(greedyBAPs)
 
 
+set.seed(2016)
+
 res <- causalEffectsSimulation(
   N = 100,
   p = 10,

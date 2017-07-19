@@ -1,6 +1,8 @@
 library(greedyBAPs)
 
 
+set.seed(2017)
+
 postscript("genomic.eps", horizontal = FALSE, onefile = FALSE, paper = "special", width = 10, height = 10)
 par(mfrow=c(4,4))
 
@@ -9,7 +11,7 @@ for (i in 1:8) {
 
   res.bap <- greedySearch(
     data,
-    n.restarts = 10,
+    n.restarts = 100,
     max.iter.ricf = 10,
     max.in.degree = Inf,
     mc.cores = 20,
