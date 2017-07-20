@@ -9,13 +9,73 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Link to arxiv paper https://arxiv.org/abs/1508.01717
 
-## Simulation
+This package implements greedy search for a class of graphical models called bow-free acyclic path diagrams (BAPs). For more information and theoretical results, see the paper https://arxiv.org/abs/1508.01717
 
-We can generate uniform BAPs, parameters, and data as follows:
-```{r, fig.show='hold'}
+Generally, the functionality provided by this package can be split into the following categories:
+
+* Basic Simulation: random graphs (`generateUniformBAP`), parameters (`generateBAPPArameters`), data (`generateData`)
+* Greedy Search: finding the best fitting graph given data (`greedySearch`)
+* Simulation Experiments: causal effects recovery (`causalEffectsSimulation`)
+* Visualisation: graphs (`plotBAP`), greedy search scores (`plotScoreCurves`), causal effects ROC curve (`plotROCCurve`)
+
+## Data Structures
+
+### Graphs
+
+A graph is represented via its adjacency matrix $M$ in a similar way as for `ggm::makeMG`. In particular:
+
+* $M_{ij} = 0$ means there is no edge between nodes $i$ and $j$
+* $M_{ij} = 1$ means there is an edge $i \rightarrow j$
+* $M_{ij} = 100$ means there is an edge $i \leftrightarrow j$
+
+```{r}
 library(greedyBAPs)
+M <- t(cbind(
+  c(0, 1, 100),
+  c(0, 0, 0),
+  c(0, 0, 0)
+))
+plotBAP(M)
+```
+
+### Parameters
+A BAP model is as a linear recursive structural equation model with (correlated) Gaussian noise. If $\mathbf{X}$ is the variable vector, the BAP can be written as:
+
+$\mathbf{X} = B^T \mathbf{X} + \epsilon$
+
+where $({B})_{ij}$ is the edge weight of edge $i \rightarrow j$, and $\epsilon$ has a $\mathcal{N}(0, \Omega)$ distribution.
+
+For the example above, a valid parametrisation would be:
+
+```{r}
+B <- t(cbind(
+  c(0, 0.3, 0),
+  c(0, 0, 0),
+  c(0, 0, 0)
+))
+Omega <- t(cbind(
+  c(3, 0, 1.5),
+  c(0, 2, 0),
+  c(0, 0, 1)
+))
+```
+
+### Data
+
+An $n$-sample dataset for a $p$-dimensional BAP model has to be in the form of an $n$-by-$p$ matrix. For example, we could fit the following dataset to the model above (it would be a poor fit, because the data was not generated from this model):
+
+```{r}
+n <- 100
+p <- 3
+data <- matrix(rnorm(n * p), n, p)
+```
+
+## Examples
+
+### Randomly generating BAPs (uniformly), parameters, data
+
+```{r, fig.show='hold'}
 set.seed(1)
 bap <- generateUniformBAP(p = 4, N = 1)[[1]]
 params <- generateBAPPArameters(bap)
@@ -24,62 +84,26 @@ plotBAP(bap)
 pairs(data)
 ```
 
-## Running Greedy Search
-We can run greedy search and plot scores curves as follows:
+### Running greedy search and visualising scores
+
 ```{r}
 res <- greedySearch(data, n.restarts = 10, mc.cores = 4)
 plotScoreCurves(res$all.scores, res$times)
 ```
 
-## Causal Effects Simulation
-We can run the causal effects simulation and plot ROC curves as follows:
+### Causal effects simulation experiment
+
 ```{r}
 res <- causalEffectsSimulation(N = 10, p = 5, n = 1000, mc.cores = 4, n.restarts = 10, max.in.degree = 2, max.steps = 100, max.iter.ricf = 10, equivalent.eps = 1e-10)
-plotROCCurve(res$CE.gt, res$CE.greedy)
+roc <- plotROCCurve(res$CE.gt, res$CE.greedy)
 ```
 
-## Sachs data
-We can run DAG-search on one of the Sachs datasets as follows:
+### Genomic data
+
+This package ships with a dataset from Sachs et al. (2015)^[http://science.sciencemag.org/content/308/5721/523], to which DAGs can be fit as follows:
+
 ```{r}
 data.sachs <- as.matrix(flowCytometry[flowCytometry$source == unique(flowCytometry$source)[1], 1:11])
 res <- greedySearch(data.sachs, n.restarts = 10, mc.cores = 4, dags.only = TRUE)
 plotScoreCurves(res$all.scores, res$times)
 ```
-
-
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
