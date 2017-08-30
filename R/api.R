@@ -130,7 +130,7 @@ generateUniformBAP <- function(
 #'   Omega - p-by-p matrix of bidirected edge weights
 #'
 #' @export
-generateBAPPArameters <- function(
+generateBAPParameters <- function(
   bap
 ) {
   GenerateParams(

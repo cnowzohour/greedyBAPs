@@ -2,7 +2,7 @@
 
 export(causalEffectsSimulation)
 export(fitAncestralGraphCustom)
-export(generateBAPPArameters)
+export(generateBAPParameters)
 export(generateData)
 export(generateUniformBAP)
 export(greedySearch)
