@@ -36,6 +36,8 @@ greedySearch <- function(
   verbose = FALSE
 ) {
 
+  if (is.null(colnames(data))) colnames(data) <- 1:ncol(data)
+
   cov.mat <- cov(data)
   p <- ncol(data)
   n <- nrow(data)

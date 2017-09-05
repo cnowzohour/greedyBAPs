@@ -209,7 +209,7 @@ GenerateData <- function(n, params) {
 
   eps <- mvtnorm::rmvnorm(n, sigma=params$Omega)
   data <- eps %*% t(solve(diag(nrow(params$B))-t(params$B)))
-  colnames(data) <- colnames(params$B)
+  colnames(data) <- if (is.null(colnames(params$B))) 1:ncol(params$B) else colnames(params$B)
 
   return(data)
 }
