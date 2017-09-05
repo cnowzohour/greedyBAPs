@@ -86,7 +86,7 @@ connectedComponents <- function(mg) {
 
 computeComponentScore <- function(comp, mg, covMat, data=NULL, n=NULL, maxIter=10,
                                   edge.penalty=1, faithful.eps=0, maxItInf=FALSE,
-                                  method="eigenvalue")
+                                  method="trace")
 {
 
   nodes <- sort(c(comp$cnodes, comp$parents))
