@@ -8,7 +8,7 @@ par(mfrow=c(4,4))
 
 for (i in 1:8) {
   data <- as.matrix(flowCytometry[flowCytometry$source == unique(flowCytometry$source)[i], 1:11])
-  data <- data - colMeans(data)
+  data <- scale(data, scale = FALSE)
 
   res.bap <- greedySearch(
     data,
