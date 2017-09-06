@@ -8,10 +8,11 @@ par(mfrow=c(4,4))
 
 for (i in 1:8) {
   data <- as.matrix(flowCytometry[flowCytometry$source == unique(flowCytometry$source)[i], 1:11])
-  data <- data - colMeans(data)
+  cov.mat <- cov(data)
 
   res.bap <- greedySearch(
-    data,
+    cov.mat,
+    nrow(data),
     n.restarts = 100,
     max.iter.ricf = 10,
     max.in.degree = Inf,
@@ -20,7 +21,8 @@ for (i in 1:8) {
   )
 
   res.dag <- greedySearch(
-    data,
+    cov.mat,
+    nrow(data),
     n.restarts = 100,
     max.iter.ricf = 10,
     max.in.degree = Inf,

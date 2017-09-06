@@ -87,7 +87,7 @@ pairs(data)
 ### Running greedy search and visualising scores
 
 ```{r}
-res <- greedySearch(data, n.restarts = 10, mc.cores = 4)
+res <- greedySearch(cov(data), nrow(data), n.restarts = 10, mc.cores = 4)
 plotScoreCurves(res$all.scores, res$times)
 ```
 
@@ -104,6 +104,6 @@ This package ships with a dataset from Sachs et al. (2015)^[http://science.scien
 
 ```{r}
 data.sachs <- as.matrix(flowCytometry[flowCytometry$source == unique(flowCytometry$source)[1], 1:11])
-res <- greedySearch(data.sachs, n.restarts = 10, mc.cores = 4, dags.only = TRUE)
+res <- greedySearch(cov(data.sachs), nrow(data.sachs), n.restarts = 10, mc.cores = 4, dags.only = TRUE)
 plotScoreCurves(res$all.scores, res$times)
 ```
