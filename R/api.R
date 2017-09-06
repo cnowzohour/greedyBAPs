@@ -1,6 +1,7 @@
 #' Greedy BAP search
 #'
-#' @param data n-by-p data matrix (n samples, p variables)
+#' @param cov.mat p-by-p covariance matrix
+#' @param n Sample size
 #' @param mg.start Starting graph(s). Must be either NULL, an adjacency matrix defining the mixed graph (if n.restarts is 0) or a list of adjacency matrices of length n.restarts+1. If NULL, a starting graph is uniformly sampled for each run.
 #' @param n.restarts Number of restarts
 #' @param mc.cores Parallelism (number of cores to be used). If set to 1, no parallelism is used. Should be at most n.restarts+1.
@@ -22,7 +23,8 @@
 #' @importFrom foreach %dopar%
 #' @export
 greedySearch <- function(
-  data,
+  cov.mat,
+  n,
   mg.start = NULL,
   n.restarts = 0,
   mc.cores = 1,
@@ -36,11 +38,10 @@ greedySearch <- function(
   verbose = FALSE
 ) {
 
-  if (is.null(colnames(data))) colnames(data) <- 1:ncol(data)
+  if (is.null(colnames(cov.mat))) colnames(cov.mat) <- 1:ncol(cov.mat)
+  if (is.null(rownames(cov.mat))) rownames(cov.mat) <- 1:nrow(cov.mat)
 
-  cov.mat <- cov(data)
-  p <- ncol(data)
-  n <- nrow(data)
+  p <- ncol(cov.mat)
 
   bap.stash <- if (is.null(mg.start)) {
     p1 <- if (dags.only) 1 else 0.5
@@ -61,7 +62,6 @@ greedySearch <- function(
 
   oneRep <- function(i) fastGreedySearch(
     bap.stash[[i]],
-    data = as.matrix(data),
     n = n,
     maxSteps = max.steps,
     direction = directionMap[direction],

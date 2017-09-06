@@ -1386,7 +1386,8 @@ causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
 
   # Run R greedy searches
   res.greedy <- greedySearch(
-    data,
+    covMat,
+    n,
     n.restarts = R,
     max.iter.ricf = maxIter,
     max.steps = maxSteps,
@@ -1402,12 +1403,12 @@ causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
   if (fast){
     tmp <- fastFindEquivalentModels(list(mg=res.greedy$final.bap), c(), list(),
                                     res.greedy$final.score, equivalent.eps, depth.max=depth.max,
-                                    data=data, n=n, maxIter=maxIter, covMat=covMat,
+                                    n=n, maxIter=maxIter, covMat=covMat,
                                     faithful.eps=faithful.eps)
   } else {
     tmp <- findEquivalentModels(list(mg=res.greedy$final.bap), c(), list(),
                                 res.greedy$final.score, equivalent.eps, depth.max=depth.max,
-                                time.max=time.max, data=data, n=n, maxIter=maxIter,
+                                time.max=time.max, n=n, maxIter=maxIter,
                                 covMat=covMat, faithful.eps=faithful.eps)
   }
   scores <- tmp$scores
@@ -1418,11 +1419,11 @@ causalEffects <- function(p, max.in.degree, Bdist, Oscale, n, pop.version, R,
   # Find equivalent models of ground truth
   if (fast) {
     tmp <- fastFindEquivalentModels(list(mg=gt$mg), c(), scores, NA, equivalent.eps,
-                                    depth.max=depth.max, data=data, n=n, maxIter=maxIter,
+                                    depth.max=depth.max, n=n, maxIter=maxIter,
                                     covMat=covMat, faithful.eps=faithful.eps)
   } else {
     tmp <- findEquivalentModels(list(mg=gt$mg), c(), scores, NA, equivalent.eps,
-                                depth.max=depth.max, time.max=time.max, data=data,
+                                depth.max=depth.max, time.max=time.max,
                                 n=n, maxIter=maxIter, covMat=covMat, faithful.eps=faithful.eps)
   }
   equiv.models.gt <- tmp$res
