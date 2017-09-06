@@ -4,13 +4,15 @@
 \alias{greedySearch}
 \title{Greedy BAP search}
 \usage{
-greedySearch(data, mg.start = NULL, n.restarts = 0, mc.cores = 1,
+greedySearch(cov.mat, n, mg.start = NULL, n.restarts = 0, mc.cores = 1,
   max.steps = Inf, max.iter.ricf = 10, neighbourhood.size = Inf,
   eps.conv = 1e-12, max.in.degree = Inf, dags.only = FALSE,
   direction = "both", verbose = FALSE)
 }
 \arguments{
-\item{data}{n-by-p data matrix (n samples, p variables)}
+\item{cov.mat}{p-by-p covariance matrix}
+
+\item{n}{Sample size}
 
 \item{mg.start}{Starting graph(s). Must be either NULL, an adjacency matrix defining the mixed graph (if n.restarts is 0) or a list of adjacency matrices of length n.restarts+1. If NULL, a starting graph is uniformly sampled for each run.}
 

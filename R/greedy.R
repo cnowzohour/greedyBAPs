@@ -121,13 +121,13 @@ computeComponentScore <- function(comp, mg, covMat, data=NULL, n=NULL, maxIter=1
       e <- eigen(CM)
       score <- -0.5 * ( length(comp$cnodes) * log(2*pi) + log(det(res$Shat)/prod(diag(res$Shat[indices,indices,drop=FALSE]))) +
                           as.numeric(sum((data[,nodes,drop=FALSE] %*% e$vectors %*% diag(sqrt(as.complex(e$values)), nrow=length(e$values)))^2))/n ) -
-        edge.penalty * log(n)/n * (n.edges + ncol(sub))
+        edge.penalty * log(n)/n * (n.edges + length(comp$cnodes))
     } else {
       # Population version
       if (n == Inf) {
         penalty <- 0
       } else {
-        penalty <- edge.penalty * log(n)/n * (n.edges + ncol(sub))
+        penalty <- edge.penalty * log(n)/n * (n.edges + length(comp$cnodes))
       }
       # Check if distribution is faithful
       if (is.null(res$Bhat)) res$Bhat <- cbind(c(1))
@@ -146,7 +146,7 @@ computeComponentScore <- function(comp, mg, covMat, data=NULL, n=NULL, maxIter=1
     if (is.null(n)) n <- nrow(data)
 
     score <- -0.5 * ( length(comp$cnodes) * log(2*pi) + log(det(res$Shat)/prod(diag(res$Shat[indices,indices,drop=FALSE]))) +
-                        (n-1)/n*(sum(diag(solve(res$Shat) %*% covMat[nodes,nodes,drop=FALSE]))-length(pa)) ) - edge.penalty * log(n)/n * (n.edges + ncol(sub))
+                        (n-1)/n*(sum(diag(solve(res$Shat) %*% covMat[nodes,nodes,drop=FALSE]))-length(pa)) ) - edge.penalty * log(n)/n * (n.edges + length(comp$cnodes))
   }
 
   return(score)
