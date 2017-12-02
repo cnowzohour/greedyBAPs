@@ -20,4 +20,4 @@ The paper referenced above contains two figures created using this package:
 * Causal effects simulation (created using [inst/generateFigure_simulation.R](inst/generateFigure_simulation.R))
 ![Causal effects simulation figure](inst/simulation.png)
 * BAPs vs DAGs on genomic data (created using [inst/generateFigure_genomic.R](inst/generateFigure_genomic.R))
-![BAPs vs DAGs on genomic data](inst/genomic.png)
+![BAPs vs DAGs on genomic data](inst/genomic1.png)
